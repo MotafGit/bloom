@@ -1,0 +1,18 @@
+{
+    "name": "drupal/vuejs",
+    "description": "Provides Vue.js integration for Drupal 9+",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "Chi",
+            "homepage": "https://www.drupal.org/u/chi"
+        },
+        {
+          "name": "minorOffense",
+          "homepage": "https://www.drupal.org/u/minorOffense"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.0"
+    }
+}

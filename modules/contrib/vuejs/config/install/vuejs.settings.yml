@@ -1,0 +1,13 @@
+libraries:
+  vue:
+    installation: local
+    development: false
+    version: 3.2.37
+    cdn: unpkg
+    path: /libraries/vue/dist/vue.global.prod.js
+  petitevue:
+    installation: local
+    development: false
+    cdn: unpkg
+    version: 0.4.1
+    path: /libraries/petite-vue/dist/petite-vue.iife.js

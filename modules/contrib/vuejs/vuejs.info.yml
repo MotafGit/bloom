@@ -1,0 +1,11 @@
+name: Vue.js
+type: module
+description: Provides a bridge between Drupal and Vue.js framework.
+configure: vuejs.settings
+core_version_requirement: ^9 || ^10
+php: 7.4
+
+# Information added by Drupal.org packaging script on 2024-01-31
+version: '3.0.3'
+project: 'vuejs'
+datestamp: 1706687289

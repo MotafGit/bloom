@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Vue.js module.
+ */
+
+ use \Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function vuejs_help($route_name, RouteMatchInterface $route_match) {
+  $help_text = '<h2>' . t("VueJS Source options") . '</h2>';
+  $help_text .= '<dl>';
+  $help_text .= '<dt>' . t('Local library') . '</dt><dd>' . t('Download the library using npm or with asset-packagist or manually. Place the code in the <strong>libraries/vue</strong> folder such that the <strong>libraries/vue/dist/*.js</strong> directory structure. . See <a href="@composerAssetsInfoUrl">this drupal.org Documentation</a> for details.', ['@composerAssetsInfoUrl' => 'https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies#third-party-libraries']) . '</dd>';
+  $help_text .= '<dt>' . t('Using a CDN') . '</dt><dd>' . t('Loads the library from remote CDN such as CDNJS or JSDelivr.') . '</dd>';
+  $help_text .= '</dl>';
+
+  switch ($route_name) {
+    case 'help.page.vuejs':
+    case 'vuejs.settings':
+      return $help_text;
+  }
+}
+
+/**
+ * Implements hook_library_info_build().
+ */
+function vuejs_library_info_build() {
+  $libraries = \Drupal::config('vuejs.settings')->get('libraries');
+
+  // VueJS librarry definition.
+  $libraries['vue'] = _vuejs_vue_generate_library_definition($libraries['vue']);
+
+  // PetiteVue library definition.
+  $libraries['petitevue'] = _vuejs_petitevue_generate_library_definition($libraries['petitevue']);
+
+  return $libraries;
+}
+
+/**
+ * Generate the library definition for the vue library.
+ */
+function _vuejs_vue_generate_library_definition($library_settings) {
+  $definition = [
+    'remote' => 'https://vuejs.org',
+    // Don't show a specific version for a local install. We don't know
+    // what version it is.
+    'version' => $library_settings['installation'] == 'local' ? '3.x' : $library_settings['version'],
+    'license' =>
+      [
+        'name' => 'MIT',
+        'url' => 'https://github.com/vuejs/vue/blob/dev/LICENSE',
+        'gpl-compatible' => TRUE,
+      ],
+  ];
+  // Set the default path.
+  $path = $library_settings['path'];
+
+  $definition['js'][$path] = [
+    'minified' => !(bool) $library_settings['development'],
+    'external' => $library_settings['installation'] != 'local',
+  ];
+
+  return $definition;
+}
+
+/**
+ * Generate the library definition for the petitevue library.
+ */
+function _vuejs_petitevue_generate_library_definition($library_settings) {
+  $definition = [
+    'remote' => 'https://github.com/vuejs/petite-vue',
+    'version' => $library_settings['installation'] == 'local' ? '0.4.x' : $library_settings['version'],
+    'license' =>
+      [
+        'name' => 'MIT',
+        'url' => 'https://github.com/vuejs/petite-vue/blob/main/LICENSE',
+        'gpl-compatible' => TRUE,
+      ],
+  ];
+
+  // Set the default path.
+  $path = $library_settings['path'];
+
+  $definition['js'][$path] = [
+    'minified' => !(bool) $library_settings['development'],
+    'external' => $library_settings['installation'] != 'local',
+  ];
+
+  // Add attributes to the script tag.
+  $definition['js'][$path]['attributes'] = [
+    'defer' => '',
+    'init' => '',
+  ];
+
+  return $definition;
+}

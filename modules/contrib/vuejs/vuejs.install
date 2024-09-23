@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the vuejs module.
+ *
+ * @ingroup vuejs
+ */
+
+/**
+ * !IMPORTANT! Upgrading vuejs to 3.x from 8.x-1.x resets the module settings to 3.x defaults.
+ *
+ * Before running the upgrade, please take a backup and check your vuejs 8.x-1.x settings.
+ * See https://www.drupal.org/project/vuejs/issues/3404816 for details.
+ * (This upgrade will NOT touch anything for EXISTING  vuejs 3.x installations)
+ */
+function vuejs_update_93001(&$sandbox) {
+  $config = \Drupal::config('vuejs.settings');
+  $hasVueRouter = $config->get('libraries.vue_router') !== NULL;
+  $hasVueResource = $config->get('libraries.vue_resource') !== NULL;
+  if ($hasVueRouter || $hasVueResource) {
+    // Only reset the config, if we detect old configuration, where these keys were present!
+    \Drupal::service('config.installer')->installDefaultConfig('module', 'vuejs');
+    return t('Reset VueJS settings to installation defaults, as the 3.x configuration is incompatible with previous versions. Check the VueJS settings page and the README!');
+  }
+  else {
+    return t('VueJS settings configuration has already been 3.x compatible. Nothing changed.');
+  }
+}
